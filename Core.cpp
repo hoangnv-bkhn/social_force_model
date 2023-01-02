@@ -533,6 +533,8 @@ void drawAGVs() {
         d3 = bottom + b * w * 0.5F;
         d4 = bottom + a * w * 0.5F;
 
+        agv->setBorderPoint(d1, d2, d3, d4);
+
         glBegin(GL_QUADS);
         glVertex3f(d1.x, d1.y, 0);
         glVertex3f(d2.x, d2.y, 0);

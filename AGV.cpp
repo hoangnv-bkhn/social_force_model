@@ -21,13 +21,22 @@ AGV::AGV() {
 
 AGV::~AGV() { agvIdx--; }
 
-void AGV::setAcceleration(double acceleration) {
+void AGV::setAcceleration(float acceleration) {
     this->acceleration = acceleration;
 }
+
+void AGV::setTangentialVelocity(float v) { tangential_velocity = v; }
 
 void AGV::setDistance(float distance) { this->distance = distance; }
 
 void AGV::setDimension(Vector3f dimension) { this->dimension = dimension; }
+
+void AGV::setBorderPoint(Vector3f d1, Vector3f d2, Vector3f d3, Vector3f d4) {
+    this->d1 = d1;
+    this->d2 = d2;
+    this->d3 = d3;
+    this->d4 = d4;
+}
 
 void AGV::setColour(float red, float green, float blue) {
     colour.set(red, green, blue);
@@ -36,18 +45,16 @@ void AGV::setColour(float red, float green, float blue) {
 void AGV::setPosition(float x, float y) { position.set(x, y, 0.0); }
 
 void AGV::setPath(float x, float y) {
-    path.push_back({Point3f(x, y, 0.0)});
+    path.push_back(Point3f(x, y, 0.0));
 }
-
-void AGV::setTangentialVelocity(float v) { tangential_velocity = v; }
 
 Point3f AGV::getPath() {
     Vector3f distanceCurr, distanceNext;
 
-    distanceCurr = path[0].position - position; // Distance to current Pathpoint
+    distanceCurr = path[0] - position; // Distance to current Pathpoint
 
     if (path.size() > 2) {
-        distanceNext = path[1].position - position; // Distance to next Pathpoint
+        distanceNext = path[1] - position; // Distance to next Pathpoint
 
         // Set Next Pathpoint as Current Pathpoint if Next Pathpoint is Nearer
         if (distanceNext.lengthSquared() < distanceCurr.lengthSquared()) {
@@ -64,7 +71,7 @@ Point3f AGV::getPath() {
         path.pop_front();
     }
 
-    return path.front().position;
+    return path.front();
 }
 
 float AGV::getOrientation() {
@@ -75,28 +82,10 @@ Point3f AGV::getAheadVector() const { return (velocity + position); }
 
 Point3f AGV::getNearestPoint(Point3f position_i) const {
     vector <Vector3f> edges;
-    float w, l;
-    Vector3f top, bottom, a, b, d1, d2, d3, d4, e_ij;
-    w = getDimension().x;
-    l = getDimension().y;
-    e_ij = path.front().position - getPosition();
-    e_ij.normalize();
-    top = getPosition() + e_ij * l * 0.5F;
-    bottom = getPosition() - e_ij * l * 0.5F;
-
-    a = Vector3f(e_ij.y, -e_ij.x, 0.0F);
-    a.normalize();
-    b = Vector3f(-e_ij.y, e_ij.x, 0.0F);
-    b.normalize();
-
-    d1 = top + a * w * 0.5F;
-    d2 = top + b * w * 0.5F;
-    d3 = bottom + b * w * 0.5F;
-    d4 = bottom + a * w * 0.5F;
-    edges.push_back(Vector3f(d1.x, d1.y, 0.0F));
-    edges.push_back(Vector3f(d2.x, d2.y, 0.0F));
-    edges.push_back(Vector3f(d3.x, d3.y, 0.0F));
-    edges.push_back(Vector3f(d4.x, d4.y, 0.0F));
+    edges.push_back(d1);
+    edges.push_back(d2);
+    edges.push_back(d3);
+    edges.push_back(d4);
     Vector3f relativeEnd, relativePos, relativeEndScal, relativePosScal;
     float dotProduct;
     vector <Point3f> nearestPoint;

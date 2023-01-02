@@ -5,35 +5,32 @@
 #include <deque>
 #include <vector>
 
-struct Pathpoint {
-    Point3f position;
-};
-
 class AGV {
 private:
     static int agvIdx;
 
     int id;
-    double acceleration;
-    float distance, tangential_velocity;
-    Vector3f dimension;
+    float acceleration, tangential_velocity, distance;
+    Vector3f dimension, velocity, instantaneous_velocity, d1, d2, d3, d4;
     Color3f colour;
 
     Point3f position;
-    std::deque <Pathpoint> path;
-    Vector3f velocity;
-    Vector3f instantaneous_velocity;
+    std::deque <Point3f> path;
 
 public:
     AGV();
 
     ~AGV();
 
-    void setAcceleration(double acceleration);
+    void setAcceleration(float acceleration);
+
+    void setTangentialVelocity(float v);
 
     void setDistance(float distance);
 
     void setDimension(Vector3f dimension);
+
+    void setBorderPoint(Vector3f d1, Vector3f d2, Vector3f d3, Vector3f d4);
 
     void setColour(float red, float green, float blue);
 
@@ -41,25 +38,23 @@ public:
 
     void setPath(float x, float y);
 
-    void setTangentialVelocity(float v);
-
     int getId() const { return id; }
 
     double getAcceleration() { return acceleration; }
 
+    float getTangentialVelocity() const { return tangential_velocity; }
+
     float getDistance() { return distance; }
 
     Vector3f getDimension() const { return dimension; }
+
+    Vector3f getVelocity() const { return velocity; }
 
     Color3f getColour() const { return colour; }
 
     Point3f getPosition() const { return position; }
 
     Point3f getPath();
-
-    float getTangentialVelocity() const { return tangential_velocity; }
-
-    Vector3f getVelocity() const { return velocity; }
 
     float getOrientation();
 
